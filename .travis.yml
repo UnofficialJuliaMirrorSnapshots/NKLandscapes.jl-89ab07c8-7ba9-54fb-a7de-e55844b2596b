@@ -1,0 +1,15 @@
+language: julia
+os:
+  - linux
+  - osx
+julia:
+  - 0.4
+  - nightly
+notifications:
+  email: false
+before_install:
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+after_success:
+  - julia -e 'cd(Pkg.dir("NKLandscapes")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+script:
+  - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("NKLandscapes"); Pkg.test("NKLandscapes"; coverage=true)'
